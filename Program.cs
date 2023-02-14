@@ -66,7 +66,6 @@ resp.EnsureSuccessStatusCode();
 // teardown
 await app.StopAsync();
 await promise;
-;
 
 // Implementation
 [ServiceContract(Namespace = "urn:example")]
@@ -78,7 +77,7 @@ public interface IWcfService
 
 public class WcfService : IWcfService
 {
-    [Authorize(Policy = "Anonymous")]
+    [Authorize("Anonymous")]
     public void Hello() { }
 }
 
