@@ -17,7 +17,7 @@ builder.Services.AddAuthorization(opts =>
     opts.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAssertion(hc =>
     {
         Console.WriteLine("Fallback");
-        return false;
+        return true;
     }).Build();
     opts.AddPolicy("Anonymous", policy => policy.RequireAssertion(hc =>
     {
@@ -65,5 +65,6 @@ class FakeJwtHandler : AuthenticationHandler<AuthenticationSchemeOptions>
         var identity = new ClaimsIdentity(new[] { new Claim("sub", Guid.NewGuid().ToString()) }, AuthenticationScheme);
         var ticket = new AuthenticationTicket(new ClaimsPrincipal(identity), AuthenticationScheme);
         return Task.FromResult(AuthenticateResult.Success(ticket));
+        //return Task.FromResult(AuthenticateResult.NoResult());
     }
 }
