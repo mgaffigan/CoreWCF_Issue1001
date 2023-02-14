@@ -54,11 +54,10 @@ postRequest.Content = new StringContent(
     @"<Envelope xmlns=""http://schemas.xmlsoap.org/soap/envelope/""><Body><Hello xmlns=""urn:example""/></Body></Envelope>",
     new System.Net.Http.Headers.MediaTypeHeaderValue("text/xml")
 );
-postRequest.Headers.Add("SOAPAction", "urn:example/IWcfService/Hello");
 var resp = await hc.SendAsync(postRequest);
 if (resp.StatusCode != System.Net.HttpStatusCode.InternalServerError)
 {
-    throw new InvalidOperationException();
+    throw new InvalidOperationException($"Received status {resp.StatusCode}");
 }
 
 // teardown
