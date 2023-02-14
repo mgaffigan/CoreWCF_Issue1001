@@ -24,12 +24,8 @@ builder.Services.AddAuthorization(opts =>
     }).Build();
     opts.AddPolicy("Anonymous", policy => policy.RequireAssertion(hc =>
     {
-        Console.WriteLine("Anonymous");
+        Console.WriteLine("Anonymous"); 
         return true;
-    }));
-    opts.AddPolicy("DenyAll", policy => policy.RequireAssertion(hc =>
-    {
-        return false;
     }));
 });
 
