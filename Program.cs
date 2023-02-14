@@ -17,15 +17,10 @@ builder.Services.AddAuthentication()
     .AddScheme<AuthenticationSchemeOptions, FakeJwtHandler>(FakeJwtHandler.AuthenticationScheme, configureOptions: null);
 builder.Services.AddAuthorization(opts =>
 {
-    opts.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAssertion(hc =>
+    opts.AddPolicy("DenyAll", policy => policy.RequireAssertion(hc =>
     {
-        Console.WriteLine("Fallback");
-        return true;
-    }).Build();
-    opts.AddPolicy("Anonymous", policy => policy.RequireAssertion(hc =>
-    {
-        Console.WriteLine("Anonymous"); 
-        return true;
+        Console.WriteLine("DenyAll");
+        return false;
     }));
 });
 
@@ -61,7 +56,10 @@ postRequest.Content = new StringContent(
 );
 postRequest.Headers.Add("SOAPAction", "urn:example/IWcfService/Hello");
 var resp = await hc.SendAsync(postRequest);
-resp.EnsureSuccessStatusCode();
+if (resp.StatusCode != System.Net.HttpStatusCode.InternalServerError)
+{
+    throw new InvalidOperationException();
+}
 
 // teardown
 await app.StopAsync();
@@ -77,7 +75,7 @@ public interface IWcfService
 
 public class WcfService : IWcfService
 {
-    [Authorize("Anonymous")]
+    [Authorize("DenyAll")]
     public void Hello() { }
 }
 
